@@ -10,19 +10,22 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _addController = new TextEditingController();
   Widget styleToDo(String title) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      width: double.infinity,
-      height: 50,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        new Flexible(
+          child: new Container(
+            padding: EdgeInsets.all(10),
+            width: double.infinity,
+            height: 50,
+            child: Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -43,16 +46,19 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: false,
         backgroundColor: Theme.of(context).canvasColor,
         elevation: 0,
-        title: Text(
-          'ToDo List',
-          style: TextStyle(
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.done,
               color: (Theme.of(context).brightness == Brightness.light)
                   ? Colors.black54
                   : Colors.white,
-              fontSize: 40),
-        ),
-        actions: <Widget>[
-          // Add 3 lines from here...
+              size: 40,
+            ),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/third');
+            },
+          ),
           IconButton(
             icon: Icon(
               Icons.add,
@@ -61,7 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   : Colors.white,
               size: 40,
             ),
-            onPressed:(){ Navigator.of(context).pushNamed('/second');},
+            onPressed: () {
+              Navigator.of(context).pushNamed('/second');
+            },
           ),
           IconButton(
             icon: Icon(
@@ -86,24 +94,66 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 20,
             ),
+            Text(
+              'ToDo List',
+              style: TextStyle(
+                  color: (Theme.of(context).brightness == Brightness.light)
+                      ? Colors.black54
+                      : Colors.white,
+                  fontSize: 40),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Expanded(
               child: ListView.builder(
                 itemCount: globals.data.length,
                 itemBuilder: (context, index) {
+                  final item = globals.data[index];
                   return Dismissible(
                     child: Card(
                       elevation: 3,
-                      child: styleToDo(globals.data[index]),
+                      child: styleToDo(item),
                     ),
-                    key: ValueKey(globals.data[index]),
+                    key: ValueKey(item),
                     background: Container(
                       color: Colors.green,
                       child: Icon(Icons.check),
                     ),
-                    onDismissed: (left) {
-                      setState(() {
-                        globals.data.removeAt(index);
-                      });
+                    secondaryBackground: Container(
+                      color: Colors.red,
+                      child: Icon(Icons.cancel),
+                    ),
+                    onDismissed: (direction) {
+                      if (direction == DismissDirection.endToStart) {
+                        setState(() {
+                          globals.data.removeAt(index);
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("$item deleted"),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {
+                                globals.data.add(item);
+                              },
+                            ),
+                          ));
+                        });
+                      } else {
+                        setState(() {
+                          globals.done.add(item);
+                          globals.data.removeAt(index);
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("$item is done!"),
+                            action: SnackBarAction(
+                              label: 'Undo',
+                              onPressed: () {
+                                globals.data.add(item);
+                                globals.done.removeLast();
+                              },
+                            ),
+                          ));
+                        });
+                      }
                     },
                   );
                 },
