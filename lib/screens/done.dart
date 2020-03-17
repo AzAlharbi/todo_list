@@ -20,6 +20,7 @@ class _DoneState extends State<Done> {
             height: 50,
             child: Text(
               title,
+              textDirection: TextDirection.rtl,
               style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
               overflow: TextOverflow.ellipsis,
             ),
@@ -39,35 +40,20 @@ class _DoneState extends State<Done> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: (Theme.of(context).brightness == Brightness.light)
-              ? Colors.black54
-              : Colors.white,
-        ),
-        brightness: Theme.of(context).brightness == Brightness.light
-            ? Brightness.light
-            : Brightness.dark,
-        centerTitle: false,
-        backgroundColor: Theme.of(context).canvasColor,
-        elevation: 0,
-      ),
       body: Container(
         color: Theme.of(context).canvasColor,
         padding: EdgeInsets.only(top: 10, bottom: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 20,
-            ),
             Text(
-              'ToDo Done',
+              'المهام المكتملة',
               style: TextStyle(
                   color: (Theme.of(context).brightness == Brightness.light)
-                      ? Colors.black54
+                      ? Colors.black
                       : Colors.white,
-                  fontSize: 40),
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold),
             ),
             SizedBox(
               height: 20,

@@ -1,4 +1,4 @@
 library my_prj.globals;
 
-List<String> data = ['Study', 'Shoping'];
+List<String> data = ['حل واجبات', 'كوب قهوة'];
 List<String> done = [];

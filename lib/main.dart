@@ -15,6 +15,7 @@ class MyApp extends StatelessWidget {
         data: (brightness) => new ThemeData(
               primarySwatch: Colors.indigo,
               brightness: brightness,
+              fontFamily: 'Tajawal',
             ),
         themedWidgetBuilder: (context, theme) {
           return new MaterialApp(
