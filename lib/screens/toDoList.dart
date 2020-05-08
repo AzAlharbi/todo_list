@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../components/globals.dart' as globals;
 import '../Service/db.dart';
 
@@ -59,109 +57,118 @@ class _TodoListState extends State<TodoList> {
           ),
           Expanded(
             child: FutureBuilder(
-              future: TodoProvider().getAllTodo(false),
+              future: TodoProvider().getAllTodo(),
               builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                print(snapshot.data);
+                if (snapshot.data == null) {
+                  return Container(
+                    height: 0,
+                    width: 0,
+                  );
                 } else {
-                  if (snapshot.data.length > 0) {
-                    return ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        final item = snapshot.data[index].columnTitle;
-                        return Dismissible(
-                          child: Card(
-                            elevation: 3,
-                            child: styleToDo(item),
-                          ),
-                          key: ValueKey(item),
-                          background: Container(
-                            padding: EdgeInsets.only(left: 30),
-                            color: Colors.green,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                              ],
-                            ),
-                          ),
-                          secondaryBackground: Container(
-                            color: Colors.red,
-                            padding: EdgeInsets.only(right: 30),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.cancel,
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                              ],
-                            ),
-                          ),
-                          onDismissed: (direction) {
-                            if (direction == DismissDirection.endToStart) {
-                              setState(() {
-                                //globals.data.removeAt(index);
-                                TodoProvider().delete(snapshot.data[index].id);
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                    "($item) حُذفت ",
-                                    textDirection: TextDirection.rtl,
-                                  ),
-                                  action: SnackBarAction(
-                                    label: 'تراجع',
-                                    onPressed: () {
-                                      globals.data.add(item);
-                                      (context as Element).reassemble();
-                                    },
-                                  ),
-                                ));
-                              });
-                            } else {
-                              setState(() {
-                                //globals.done.add(item);
-                                // globals.data.removeAt(index);
-                                Todo updateTodo = Todo(
-                                    title: snapshot.data[index].title,
-                                    done: true);
-                                TodoProvider().update(updateTodo);
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text(
-                                    "($item) قد إكتملت!",
-                                    textDirection: TextDirection.rtl,
-                                  ),
-                                  action: SnackBarAction(
-                                    label: 'تراجع',
-                                    onPressed: () {
-                                      globals.data.add(item);
-                                      globals.done.removeLast();
-                                      (context as Element).reassemble();
-                                    },
-                                  ),
-                                ));
-                              });
-                            }
-                          },
-                        );
-                      },
-                    );
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
                   } else {
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 40),
-                      child: Text(
-                        "لايوجد مهام :(",
-                        style: TextStyle(
-                          fontSize: 16,
+                    if (snapshot.data.length > 0) {
+                      return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          final item = snapshot.data[index].columnTitle;
+                          return Dismissible(
+                            child: Card(
+                              elevation: 3,
+                              child: styleToDo(item),
+                            ),
+                            key: ValueKey(item),
+                            background: Container(
+                              padding: EdgeInsets.only(left: 30),
+                              color: Colors.green,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            secondaryBackground: Container(
+                              color: Colors.red,
+                              padding: EdgeInsets.only(right: 30),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.cancel,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            onDismissed: (direction) {
+                              if (direction == DismissDirection.endToStart) {
+                                setState(() {
+                                  //globals.data.removeAt(index);
+                                  TodoProvider()
+                                      .delete(snapshot.data[index].id);
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                      "($item) حُذفت ",
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                    action: SnackBarAction(
+                                      label: 'تراجع',
+                                      onPressed: () {
+                                        globals.data.add(item);
+                                        (context as Element).reassemble();
+                                      },
+                                    ),
+                                  ));
+                                });
+                              } else {
+                                setState(() {
+                                  //globals.done.add(item);
+                                  // globals.data.removeAt(index);
+                                  Todo updateTodo = Todo(
+                                      title: snapshot.data[index].title,
+                                      done: true);
+                                  TodoProvider().update(updateTodo);
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                      "($item) قد إكتملت!",
+                                      textDirection: TextDirection.rtl,
+                                    ),
+                                    action: SnackBarAction(
+                                      label: 'تراجع',
+                                      onPressed: () {
+                                        globals.data.add(item);
+                                        globals.done.removeLast();
+                                        (context as Element).reassemble();
+                                      },
+                                    ),
+                                  ));
+                                });
+                              }
+                            },
+                          );
+                        },
+                      );
+                    } else {
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Text(
+                          "لايوجد مهام :(",
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   }
                 }
               },

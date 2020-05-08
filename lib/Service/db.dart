@@ -76,18 +76,22 @@ create table $tableTodo (
     return null;
   }
 
-  Future<Todo> getAllTodo(bool done) async {
+  Future<List<Todo>> getAllTodo() async {
     await init();
-    List<Map> maps = await db.query(tableTodo,
+    List<Map> list = await db.query(tableTodo,
         columns: [columnId, columnDone, columnTitle],
         where: '$columnDone = ?',
-        whereArgs: [done]);
-    if (maps.length > 0) {
-      for (var i = 0; i < maps.length; i++) {
-        return Todo.fromMap(maps[i]);
-      }
+        whereArgs: [0]);
+    List<Todo> todos = new List();
+    for (int i = 0; i < list.length; i++) {
+      Todo todo = new Todo();
+      todo.id = list[i]['columnId'];
+      todo.title = list[i]['columnTitle'];
+      todo.done = list[i]['columnDone'];
+
+      todos.add(todo);
     }
-    return null;
+    return todos;
   }
 
   Future<Todo> getDoneTodo() async {
