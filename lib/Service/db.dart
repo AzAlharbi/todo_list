@@ -76,7 +76,7 @@ create table $tableTodo (
     return null;
   }
 
-  Future<List<Todo>> getAllTodo(bool done) async {
+  Future<Todo> getAllTodo(bool done) async {
     await init();
     List<Map> maps = await db.query(tableTodo,
         columns: [columnId, columnDone, columnTitle],
