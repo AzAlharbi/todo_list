@@ -58,18 +58,20 @@ class _TodoListState extends State<TodoList> {
           Expanded(
             child: FutureBuilder(
               future: TodoProvider().getAllTodo(),
-              builder: (context, snapshot) {
-                print(snapshot.data);
-                if (snapshot.data == null) {
-                  return Container(
-                    height: 0,
-                    width: 0,
-                  );
-                } else {
+              builder: (context, snapshot) {    
                   if (!snapshot.hasData) {
                     return Center(child: CircularProgressIndicator());
-                  } else {
-                    if (snapshot.data.length > 0) {
+                  } else if (snapshot.data.length == 0) {
+                  return Container(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Text(
+                          "لايوجد مهام :(",
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      );
+                  }else{
                       return ListView.builder(
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, index) {
@@ -158,20 +160,10 @@ class _TodoListState extends State<TodoList> {
                           );
                         },
                       );
-                    } else {
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 40),
-                        child: Text(
-                          "لايوجد مهام :(",
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                      );
-                    }
+                    
                   }
                 }
-              },
+              ,
             ),
           ),
         ],

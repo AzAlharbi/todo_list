@@ -35,7 +35,7 @@ class TodoProvider {
   Database db;
   String path;
 
-  init() async {
+  Future init() async {
     String path = await getDatabasesPath();
     path = join(path, 'notes.db');
 
@@ -53,9 +53,12 @@ create table $tableTodo (
   Future<Todo> insert(Todo todo) async {
     if (todo.title.trim().isEmpty) todo.title = 'فارغه';
     todo.id = await db.insert(tableTodo, todo.toMap());
+    print('done');
+    // String title = todo.title;
+    // bool done = todo.done;
+    // db.rawInsert('INSERT INTO todo(title, done) VALUES($title,$done)');
     return todo;
   }
-
   //   Future<List<Map<String, dynamic>>> getTodoMapList() async {
   // 	Database db = await this.database;
 
@@ -76,22 +79,26 @@ create table $tableTodo (
     return null;
   }
 
-  Future<List<Todo>> getAllTodo() async {
-    await init();
-    List<Map> list = await db.query(tableTodo,
-        columns: [columnId, columnDone, columnTitle],
-        where: '$columnDone = ?',
-        whereArgs: [0]);
-    List<Todo> todos = new List();
-    for (int i = 0; i < list.length; i++) {
-      Todo todo = new Todo();
-      todo.id = list[i]['columnId'];
-      todo.title = list[i]['columnTitle'];
-      todo.done = list[i]['columnDone'];
+  // Future<List<Todo>> getAllTodo() async {
+  //   await init();
+  //   List<Map> list = await db.query(tableTodo,
+  //       columns: [columnId, columnDone, columnTitle],
+  //       where: '$columnDone = ?',
+  //       whereArgs: [0]);
+  //   List<Todo> todos = new List();
+  //   for (int i = 0; i < list.length; i++) {
+  //     Todo todo = new Todo();
+  //     todo.id = list[i]['columnId'];
+  //     todo.title = list[i]['columnTitle'];
+  //     todo.done = list[i]['columnDone'];
 
-      todos.add(todo);
-    }
-    return todos;
+  //     todos.add(todo);
+  //   }
+  //   return todos;
+  // }
+  Future<List<Map<String, dynamic>>> getAllTodo() async {
+    await init();
+    return await db.query(tableTodo);
   }
 
   Future<Todo> getDoneTodo() async {
