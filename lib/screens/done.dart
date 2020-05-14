@@ -1,6 +1,7 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import '../components/globals.dart' as globals;
+import '../Service/db.dart';
 
 class Done extends StatefulWidget {
   @override
@@ -9,20 +10,36 @@ class Done extends StatefulWidget {
 
 class _DoneState extends State<Done> {
   TextEditingController _addController = new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    TodoProvider().init();
+  }
+
   Widget styleToDo(String title) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         new Flexible(
           child: new Container(
-            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                border:
+                    Border(left: BorderSide(color: Colors.green, width: 5))),
             width: double.infinity,
+            padding: EdgeInsets.only(right: 10),
             height: 50,
-            child: Text(
-              title,
-              textDirection: TextDirection.rtl,
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  title,
+                  textDirection: TextDirection.rtl,
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
           ),
         ),
@@ -59,16 +76,34 @@ class _DoneState extends State<Done> {
               height: 20,
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: globals.done.length,
-                itemBuilder: (context, index) {
-                  final item = globals.done[index];
-                  return Card(
-                    elevation: 3,
-                    child: styleToDo(item),
-                  );
-                },
-              ),
+              child: FutureBuilder(
+                  future: TodoProvider().getDoneTodo(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.data.length == 0) {
+                      return Container(
+                        padding: EdgeInsets.symmetric(vertical: 40),
+                        child: Text(
+                          "لايوجد مهام مكتملة :(",
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          final item = snapshot.data[index].title;
+                          return Card(
+                            elevation: 7,
+                            child: styleToDo(item),
+                          );
+                        },
+                      );
+                    }
+                  }),
             ),
           ],
         ),

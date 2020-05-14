@@ -2,6 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 final String tableTodo = 'todo';
+final String doneTodo = 'doneTodo';
 final String columnId = '_id';
 final String columnTitle = 'title';
 final String columnDone = 'done';
@@ -13,31 +14,30 @@ class Todo {
 
   Todo({this.id, this.title, this.done});
 
-  Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{
-      columnTitle: title,
-      columnDone: done == true ? 1 : 0
-    };
-    if (id != null) {
-      map[columnId] = id;
-    }
-    return map;
-  }
+  Map<String, dynamic> toMap() =>
+      {columnTitle: title, columnDone: done == true ? 1 : 0, columnId: id};
 
-  Todo.fromMap(Map<String, dynamic> map) {
-    id = map[columnId];
-    title = map[columnTitle];
-    done = map[columnDone] == 1;
-  }
+  factory Todo.fromMap(Map<String, dynamic> map) => new Todo(
+        id: map[columnId],
+        title: map[columnTitle],
+        done: map[columnDone] == 1,
+      );
 }
 
 class TodoProvider {
   Database db;
   String path;
 
+  Future<Database> get database async {
+    if (db != null) return db;
+
+    db = await init();
+    return db;
+  }
+
   Future init() async {
     String path = await getDatabasesPath();
-    path = join(path, 'notes.db');
+    path = join(path, 'Todo.db');
 
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
@@ -51,66 +51,50 @@ create table $tableTodo (
   }
 
   Future<Todo> insert(Todo todo) async {
+    await init();
     if (todo.title.trim().isEmpty) todo.title = 'فارغه';
     todo.id = await db.insert(tableTodo, todo.toMap());
-    print('done');
     // String title = todo.title;
     // bool done = todo.done;
     // db.rawInsert('INSERT INTO todo(title, done) VALUES($title,$done)');
+    print('Todo added: ${todo.title}');
     return todo;
   }
-  //   Future<List<Map<String, dynamic>>> getTodoMapList() async {
-  // 	Database db = await this.database;
 
-  // 	//var result = await db.rawQuery('SELECT * FROM $tableTodo order by $colTitle ASC');
-  // 	var result = await db.query(tableTodo, orderBy: '$columnDone 0');
-  // 	return result;
-  // }
-
-  Future<Todo> getTodo(int id) async {
+  Future<List<Todo>> getAllTodo() async {
     await init();
-    List<Map> maps = await db.query(tableTodo,
+    // List<Map> maps =
+    //     await db.query(tableTodo, columns: [columnId, columnDone, columnTitle]);
+    List<Todo> todoList = [];
+    // maps.forEach((maps) => todo.add(maps));
+    // List<Map<String, dynamic>> todo = await db.query('todo');
+    List<Map> todo = await db.query(tableTodo,
         columns: [columnId, columnDone, columnTitle],
-        where: '$columnId = ?',
-        whereArgs: [id]);
-    if (maps.length > 0) {
-      return Todo.fromMap(maps.first);
+        where: '$columnDone = ?',
+        whereArgs: [0]);
+    for (var i = 0; i < todo.length; i++) {
+      todoList.add(Todo.fromMap(todo[i]));
     }
-    return null;
+    return todoList;
   }
-
-  // Future<List<Todo>> getAllTodo() async {
-  //   await init();
-  //   List<Map> list = await db.query(tableTodo,
-  //       columns: [columnId, columnDone, columnTitle],
-  //       where: '$columnDone = ?',
-  //       whereArgs: [0]);
-  //   List<Todo> todos = new List();
-  //   for (int i = 0; i < list.length; i++) {
-  //     Todo todo = new Todo();
-  //     todo.id = list[i]['columnId'];
-  //     todo.title = list[i]['columnTitle'];
-  //     todo.done = list[i]['columnDone'];
-
-  //     todos.add(todo);
-  //   }
-  //   return todos;
+  // Future<List<Map<String, dynamic>>> getAllTodo() async {
+  //   return await db.query(tableTodo);
   // }
-  Future<List<Map<String, dynamic>>> getAllTodo() async {
-    await init();
-    return await db.query(tableTodo);
-  }
 
-  Future<Todo> getDoneTodo() async {
+  Future<List<Todo>> getDoneTodo() async {
     await init();
-    List<Map> maps = await db.query(tableTodo,
+
+    List<Todo> todoDoneList = [];
+
+    // List<Map<String, dynamic>> todo = await db.query('doneTodo');
+    List<Map> todo = await db.query(tableTodo,
         columns: [columnId, columnDone, columnTitle],
         where: '$columnDone = ?',
         whereArgs: [1]);
-    if (maps.length > 0) {
-      return Todo.fromMap(maps.first);
+    for (var i = 0; i < todo.length; i++) {
+      todoDoneList.add(Todo.fromMap(todo[i]));
     }
-    return null;
+    return todoDoneList;
   }
 
   Future<int> delete(int id) async {

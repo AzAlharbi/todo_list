@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _addController.text != " ") {
                 setState(() {
                   Todo newTodo =
-                      Todo(id: null, title: _addController.text, done: false);
+                      new Todo(title: _addController.text, done: false);
                   TodoProvider().insert(newTodo);
                 });
                 _addController.clear();
