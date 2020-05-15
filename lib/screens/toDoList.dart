@@ -46,6 +46,7 @@ class _TodoListState extends State<TodoList> {
     return Container(
       color: Theme.of(context).canvasColor,
       padding: EdgeInsets.only(top: 10, bottom: 10),
+      width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

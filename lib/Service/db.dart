@@ -77,9 +77,6 @@ create table $tableTodo (
     }
     return todoList;
   }
-  // Future<List<Map<String, dynamic>>> getAllTodo() async {
-  //   return await db.query(tableTodo);
-  // }
 
   Future<List<Todo>> getDoneTodo() async {
     await init();
@@ -100,6 +97,11 @@ create table $tableTodo (
   Future<int> delete(int id) async {
     await init();
     return await db.delete(tableTodo, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  Future<int> deleteDone() async {
+    await init();
+    return await db.delete(tableTodo, where: '$columnDone = ?', whereArgs: [1]);
   }
 
   Future<int> update(Todo todo) async {

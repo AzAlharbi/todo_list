@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import '../components/globals.dart' as globals;
@@ -60,8 +62,10 @@ class _DoneState extends State<Done> {
       body: Container(
         color: Theme.of(context).canvasColor,
         padding: EdgeInsets.only(top: 10, bottom: 10),
+        width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               'المهام المكتملة',

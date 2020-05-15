@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     TodoList(),
     Done(),
   ];
+
   void initState() {
     super.initState();
     TodoProvider().init();
@@ -40,23 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
           brightness: Theme.of(context).brightness == Brightness.light
               ? Brightness.light
               : Brightness.dark,
-          centerTitle: false,
+          centerTitle: true,
           backgroundColor: Theme.of(context).canvasColor,
           elevation: 0,
           actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.add,
-                color: (Theme.of(context).brightness == Brightness.light)
-                    ? Colors.black54
-                    : Colors.white,
-                size: 40,
-              ),
-              onPressed: () {
-                // Navigator.of(context).pushNamed('/second');
-                _addNewToDo();
-              },
-            ),
             IconButton(
               icon: Icon(
                 Icons.lightbulb_outline,
@@ -68,7 +56,37 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 changeBrightness();
               },
-            )
+            ),
+            SizedBox(
+              width: (MediaQuery.of(context).size.width * .73),
+            ),
+            _page == 0
+                ? IconButton(
+                    icon: Icon(
+                      Icons.add,
+                      color: (Theme.of(context).brightness == Brightness.light)
+                          ? Colors.black54
+                          : Colors.white,
+                      size: 40,
+                    ),
+                    onPressed: () {
+                      // Navigator.of(context).pushNamed('/second');
+                      _addNewToDo();
+                    },
+                  )
+                : IconButton(
+                    icon: Icon(
+                      Icons.delete_outline,
+                      color: (Theme.of(context).brightness == Brightness.light)
+                          ? Colors.black54
+                          : Colors.white,
+                      size: 40,
+                    ),
+                    onPressed: () {
+                      TodoProvider().deleteDone();
+                      (context as Element).reassemble();
+                    },
+                  ),
           ],
         ),
         bottomNavigationBar: CurvedNavigationBar(
@@ -80,14 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
           items: <Widget>[
             Icon(Icons.list, size: 30, color: Colors.white),
             Icon(Icons.done, size: 30, color: Colors.white),
-
-            // Icon(
-            //   Icons.add,
-            //   size: 30,
-            //   color: (Theme.of(context).brightness == Brightness.light)
-            //       ? Colors.white
-            //       : Colors.black,
-            // ),
           ],
           onTap: (index) {
             setState(() {
