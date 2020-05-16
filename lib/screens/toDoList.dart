@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../components/globals.dart' as globals;
 import '../Service/db.dart';
 
 class TodoList extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_list/screens/add_screen.dart';
-import 'package:todo_list/screens/done.dart';
+import 'package:Todo/screens/done.dart';
 
 import 'screens/home_screen.dart';
 
@@ -22,12 +21,12 @@ class MyApp extends StatelessWidget {
               title: 'ToDO',
               debugShowCheckedModeBanner: false,
               theme: theme,
-              // home: HomeScreen()
-              routes: {
-                '/': (context) => HomeScreen(),
-                '/second': (context) => AddToDo(),
-                '/third': (context) => Done(),
-              });
+              home: HomeScreen());
+          // routes: {
+          //   '/': (context) => HomeScreen(),
+
+          //   '/third': (context) => Done(),
+          // });
         });
   }
 }

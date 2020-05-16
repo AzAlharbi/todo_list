@@ -1,8 +1,5 @@
-import 'dart:ffi';
-
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import '../components/globals.dart' as globals;
 import '../Service/db.dart';
 
 class Done extends StatefulWidget {

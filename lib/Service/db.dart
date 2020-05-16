@@ -54,9 +54,6 @@ create table $tableTodo (
     await init();
     if (todo.title.trim().isEmpty) todo.title = 'فارغه';
     todo.id = await db.insert(tableTodo, todo.toMap());
-    // String title = todo.title;
-    // bool done = todo.done;
-    // db.rawInsert('INSERT INTO todo(title, done) VALUES($title,$done)');
     print('Todo added: ${todo.title}');
     return todo;
   }

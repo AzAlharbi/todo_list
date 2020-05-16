@@ -1,9 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_list/Service/db.dart';
-import 'package:todo_list/screens/done.dart';
-import '../components/globals.dart' as globals;
+import 'package:Todo/Service/db.dart';
+import 'package:Todo/screens/done.dart';
+
 import 'toDoList.dart';
 
 class HomeScreen extends StatefulWidget {
